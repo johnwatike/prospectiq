@@ -1,0 +1,55 @@
+
+services:
+  perfex-crm:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: perfex-crm
+    ports:
+      - "8081:80"
+    environment:
+      - ENVIRONMENT=production
+      - TZ=UTC
+    volumes:
+      # Mount writable directories for persistent data
+      - .:/var/www/html:cached
+      - ./application/cache:/var/www/html/application/cache
+      - ./application/logs:/var/www/html/application/logs
+      - ./uploads:/var/www/html/uploads
+      - ./temp:/var/www/html/temp
+      - ./backups:/var/www/html/backups
+      # Optional: Mount config for runtime configuration
+      # - ./application/config/app-config.php:/var/www/html/application/config/app-config.php:ro
+    restart: unless-stopped
+    networks:
+      - perfex-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: MySQL database service
+  # mysql:
+  #   image: mysql:8.0
+  #   container_name: perfex-mysql
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: rootpassword
+  #     MYSQL_DATABASE: perfex_crm
+  #     MYSQL_USER: perfex
+  #     MYSQL_PASSWORD: perfexpassword
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   ports:
+  #     - "3306:3306"
+  #   networks:
+  #     - perfex-network
+  #   restart: unless-stopped
+
+networks:
+  perfex-network:
+    driver: bridge
+
+# volumes:
+#   mysql_data:

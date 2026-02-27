@@ -1,0 +1,15 @@
+{
+    "name": "devoracle/debt-collection",
+    "description": "Track and manage student fee follow-ups including reminders, reports, and status updates.",
+    "type": "project",
+    "authors": [
+        {
+            "name": "DevOracle",
+            "email": "dev@example.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "phpoffice/phpspreadsheet": "^4.4"
+    }
+}

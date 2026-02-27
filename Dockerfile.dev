@@ -1,0 +1,141 @@
+# Development Dockerfile for CodeIgniter 3 / Perfex CRM
+# Extends the production Dockerfile but with development optimizations
+FROM php:8.2-fpm
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Install system dependencies, PHP extensions, and Nginx
+RUN apt-get update && apt-get install -y \
+    git \
+    libicu-dev \
+    libonig-dev \
+    libpng-dev \
+    libjpeg-dev \
+    libfreetype6-dev \
+    libzip-dev \
+    libxml2-dev \
+    libssl-dev \
+    libcurl4-openssl-dev \
+    unzip \
+    curl \
+    libmagickwand-dev \
+    libkrb5-dev \
+    nginx \
+    supervisor \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install -j$(nproc) \
+        intl \
+        mysqli \
+        pdo_mysql \
+        zip \
+        opcache \
+        gd \
+        soap \
+        bcmath \
+        exif \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick \
+    && rm -rf /var/lib/apt/lists/*
+
+# Try to install IMAP extension - skip if package not available
+RUN apt-get update && \
+    (apt-get install -y libc-client-dev libkrb5-dev && \
+     docker-php-ext-configure imap --with-kerberos --with-imap-ssl && \
+     docker-php-ext-install imap && \
+     rm -rf /var/lib/apt/lists/*) || \
+    (echo "IMAP extension not available, will use --ignore-platform-req during composer install" && \
+     rm -rf /var/lib/apt/lists/*)
+
+# Install Composer
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/usr/local/bin --filename=composer \
+    && php -r "unlink('composer-setup.php');"
+
+# Copy nginx and PHP-FPM configurations
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+
+# Copy composer files first for better layer caching
+COPY application/composer.json application/composer.lock* /var/www/html/application/
+
+# Install dependencies (including dev dependencies for development)
+WORKDIR /var/www/html/application
+RUN composer install --no-interaction --optimize-autoloader --no-scripts --ignore-platform-req=ext-imap || \
+    composer install --no-interaction --optimize-autoloader --no-scripts
+
+# Create nginx cache directories
+RUN mkdir -p /var/cache/nginx/fastcgi \
+    && mkdir -p /var/log/nginx \
+    && chown -R www-data:www-data /var/cache/nginx \
+    && chown -R www-data:www-data /var/log/nginx
+
+# Set proper permissions (will be overridden by volume mounts, but good for initial setup)
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html \
+    && chmod -R 775 /var/www/html/application/cache \
+    && chmod -R 775 /var/www/html/application/logs \
+    && chmod -R 775 /var/www/html/uploads \
+    && chmod -R 775 /var/www/html/temp \
+    && chmod -R 775 /var/www/html/backups || true
+
+# Configure PHP for DEVELOPMENT (opcache enabled but validates timestamps for real-time changes)
+RUN echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.interned_strings_buffer=8" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_accelerated_files=4000" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.fast_shutdown=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.validate_timestamps=1" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "opcache.max_wasted_percentage=10" >> /usr/local/etc/php/conf.d/opcache.ini
+
+# Development PHP-FPM settings (more processes for development)
+RUN sed -i 's/pm.max_children = 50/pm.max_children = 30/' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/pm.start_servers = 10/pm.start_servers = 5/' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/pm.min_spare_servers = 5/pm.min_spare_servers = 2/' /usr/local/etc/php-fpm.d/www.conf \
+    && sed -i 's/pm.max_spare_servers = 20/pm.max_spare_servers = 10/' /usr/local/etc/php-fpm.d/www.conf
+
+# PHP development settings
+RUN echo "upload_max_filesize=50M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "post_max_size=50M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "max_execution_time=300" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "max_input_time=300" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "memory_limit=512M" >> /usr/local/etc/php/conf.d/uploads.ini \
+    && echo "display_errors=On" >> /usr/local/etc/php/conf.d/development.ini \
+    && echo "display_startup_errors=On" >> /usr/local/etc/php/conf.d/development.ini \
+    && echo "error_reporting=E_ALL" >> /usr/local/etc/php/conf.d/development.ini \
+    && echo "realpath_cache_size=4096K" >> /usr/local/etc/php/conf.d/performance.ini \
+    && echo "realpath_cache_ttl=600" >> /usr/local/etc/php/conf.d/performance.ini \
+    && echo "default_socket_timeout=60" >> /usr/local/etc/php/conf.d/performance.ini
+
+# Set timezone
+RUN echo "date.timezone = UTC" >> /usr/local/etc/php/conf.d/timezone.ini
+
+# Create supervisor configuration for running both nginx and PHP-FPM
+RUN echo "[supervisord]" > /etc/supervisor/conf.d/supervisord.conf \
+    && echo "nodaemon=true" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "[program:php-fpm]" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "command=php-fpm" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "autostart=true" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "autorestart=true" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "stderr_logfile=/var/log/php-fpm.err.log" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "stdout_logfile=/var/log/php-fpm.out.log" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "[program:nginx]" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "command=nginx -g 'daemon off;'" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "autostart=true" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "autorestart=true" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "stderr_logfile=/var/log/nginx.err.log" >> /etc/supervisor/conf.d/supervisord.conf \
+    && echo "stdout_logfile=/var/log/nginx.out.log" >> /etc/supervisor/conf.d/supervisord.conf
+
+# Expose port
+EXPOSE 80
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost/health || exit 1
+
+# Start supervisor to manage nginx and PHP-FPM
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

@@ -1,0 +1,64 @@
+services:
+  perfex-crm:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: perfex-crm-dev
+    ports:
+      - "8081:80"
+    volumes:
+      # Use cached mount for better performance on macOS
+      - .:/var/www/html:cached
+      # Keep writable directories mounted with delegated for better write performance
+      - ./application/cache:/var/www/html/application/cache:delegated
+      - ./application/logs:/var/www/html/application/logs:delegated
+      - ./uploads:/var/www/html/uploads:delegated
+      - ./temp:/var/www/html/temp:delegated
+      - ./backups:/var/www/html/backups:delegated
+    environment:
+      - ENVIRONMENT=development
+      - TZ=UTC
+      # PHP performance optimizations
+      - PHP_OPCACHE_ENABLE=1
+      - PHP_OPCACHE_MEMORY_CONSUMPTION=128
+      - PHP_OPCACHE_VALIDATE_TIMESTAMPS=1
+    restart: unless-stopped
+    networks:
+      - perfex-network
+    # Add resource limits to prevent resource exhaustion
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: perfex-mysql-dev
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: perfex_crm
+      MYSQL_USER: perfex
+      MYSQL_PASSWORD: perfexpassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - perfex-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-prootpassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  perfex-network:
+    driver: bridge
+
+volumes:
+  mysql_data:

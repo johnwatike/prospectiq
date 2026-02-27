@@ -1,0 +1,100 @@
+<?php
+
+class Webrtc extends AdminController {
+
+    const API_KEY = 'ADD_YOUR_API_KEY_HERE';
+    const USERNAME = 'ADD_YOUR_AFRICASTALKING_USERNAME_HERE';
+    const PHONE_NUMBER = 'ADD_YOUR_AFRICASTALKING_VIRTUAL_NUMBER_HERE';
+
+    private $lastRegisteredClient = self::USERNAME . '.browser1';
+
+    public function index() {
+       
+ $data['title'] = "Phone";
+ $this->app_scripts->add('surveys-js', module_dir_url('phone', 'assets/js/index.js'), 'admin', ['app-js']);
+ $this->app_css->add('surveys-css', module_dir_url('phone', 'assets/css/surveys.css'), 'admin', ['app-css']);
+ $this->load->view('phone/dialer', $data);
+    }
+
+    // used by browser to fetch token.
+    // the token is needed by the browser to initialize session
+    public function capability_token() {
+        $params = array(
+            'clientName' => $this->input->post('clientName')
+        );
+
+        $token = $this->capabilityToken($params);
+
+        if ($token) {
+            $this->output->set_output($token);
+        } else {
+            $this->output->set_status_header(500);
+            $this->output->set_output('Error generating capability token');
+        }
+    }
+
+    // make sure to add this route as your callbck url from the africastalking dashboard
+    public function callback_url() {
+        $clientDialedNumber = $this->input->post('clientDialedNumber');
+
+        if ($clientDialedNumber) {
+            // assumes a browser tried to make a call
+            $callActions = '<Dial phoneNumbers="' . $clientDialedNumber . '"/>';
+        } else {
+            // assumes virtual number was called so tries to route call to the last browser session
+            $callActions = '<Dial phoneNumbers="' . $this->lastRegisteredClient . '"/>';   
+        }
+
+        $responseAction = '<?xml version="1.0" encoding="UTF-8"?><Response>' . $callActions . '</Response>';
+
+        $this->output->set_output($responseAction);
+    }
+
+    // make sure to add this route as your events callbck url from the africastalking dashboard. 
+    // You can use this to monitor your events
+    public function events_url() {
+        $events = $this->input->post('events');
+        log_message('info', print_r(array('events' => $events), true));
+    }
+
+    /////////////////////////////////////utility functions///////////////////////////////////////////
+
+    private function capabilityToken($params) {
+        $token = null;
+        $url = 'https://webrtc.africastalking.com/capability-token/request';
+        $data = array(
+            'username' => self::USERNAME,
+            'phoneNumber' => self::PHONE_NUMBER,
+            'clientName' => isset($params['clientName']) ? $params['clientName'] : 'browser1',
+            'incoming' => 'true',
+            'outgoing' => 'true',
+            'expire' => '7200s'
+        );
+
+        if ($data['username'] && $data['clientName'] && $data['phoneNumber']) {
+            // add API key here
+            $headers = array(
+                'APIKEY: ' . self::API_KEY,
+                'Content-Type: application/json'
+            );
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+            $response = json_decode($result, true);
+
+            if (isset($response['token'])) {
+                $token = $response
+            }
+        }
+
+        return $token;
+    }
+
+}

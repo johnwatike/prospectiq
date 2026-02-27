@@ -1,0 +1,66 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Documentation
+README.md
+*.md
+DOCKER.md
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# macOS metadata
+__MACOSX/
+.DS_Store
+
+# Development files
+.env
+.env.*
+error_log
+*.log
+
+# Writable directories (will be mounted as volumes)
+/application/cache/*
+/application/logs/*
+/uploads/*
+/temp/*
+/backups/*
+!.gitkeep
+
+# Installation files
+/installxx/
+
+# Node modules (if building assets separately)
+node_modules/
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Build artifacts
+*.cache
+webpack.mix.js
+tailwind.config.js
+
+# Composer (will be installed in container)
+/vendor/
+/application/vendor/
+/modules/*/vendor/
+
+# Test files
+/tests/
+phpunit.xml
+.phpunit.result.cache
+
+# Documentation directory
+/documentation/
+
+# CGI
+/cgi-bin/
