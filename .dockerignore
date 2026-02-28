@@ -20,11 +20,7 @@ DOCKER.md
 __MACOSX/
 .DS_Store
 
-# Development files
-.env
-.env.*
-error_log
-*.log
+
 
 # Writable directories (will be mounted as volumes)
 /application/cache/*
@@ -34,8 +30,7 @@ error_log
 /backups/*
 !.gitkeep
 
-# Installation files
-/installxx/
+
 
 # Node modules (if building assets separately)
 node_modules/

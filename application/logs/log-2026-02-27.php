@@ -859,3 +859,85 @@ ERROR - 2026-02-27 23:23:54 --> Could not find the language line "phone_settings
 ERROR - 2026-02-27 23:24:08 --> Could not find the language line "phone_settings"
 ERROR - 2026-02-27 23:24:22 --> Could not find the language line "phone_settings"
 ERROR - 2026-02-27 23:24:37 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:34:31 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 236
+ERROR - 2026-02-27 20:34:31 --> Database Error: SQLSTATE[HY000]: General error: 2006 MySQL server has gone away: SELECT name, value FROM tbloptions WHERE `name` IN ('perfex_saas_landing_page_theme','perfex_saas_landing_page_url')
+ERROR - 2026-02-27 23:34:31 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 236
+ERROR - 2026-02-27 20:34:31 --> Severity: error --> Exception: There is no active transaction /var/www/html/modules/perfex_saas/helpers/perfex_saas_core_helper.php 734
+ERROR - 2026-02-27 23:34:31 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 20:36:36 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:36:36 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:36:36 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:36:36 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:36:36 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:37:34 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 203
+ERROR - 2026-02-27 20:37:34 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 203
+ERROR - 2026-02-27 23:37:39 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 23:38:03 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:38:04 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:38:04 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:38:25 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:38:52 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:38:52 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 23:39:17 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:39:41 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 23:39:43 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 236
+ERROR - 2026-02-27 20:40:23 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:40:35 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:40:35 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:40:35 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:40:36 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:40:37 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:41:29 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:41:30 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 23:41:30 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 20:41:30 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:41:30 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:41:30 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:41:31 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:41:48 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:41:48 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:42:01 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:42:17 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:42:19 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:42:23 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 23:42:27 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:42:30 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 20:42:33 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:42:36 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:42:49 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:20 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:23 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:23 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:23 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:24 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:28 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:40 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:40 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:46 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 23:43:51 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 236
+ERROR - 2026-02-27 20:43:51 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 20:43:53 --> Severity: error --> Exception: MySQL server has gone away /var/www/html/system/database/drivers/mysqli/mysqli_driver.php 307
+ERROR - 2026-02-27 23:43:56 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:44:04 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:44:16 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:44:19 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 20:44:30 --> Severity: Warning --> session_start(): Failed to read session data: user (path: ) /var/www/html/application/libraries/Session/App_Session.php 77
+ERROR - 2026-02-27 23:44:32 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:44:34 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:44:39 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at /var/www/html/system/core/Exceptions.php:271) /var/www/html/system/helpers/url_helper.php 564
+ERROR - 2026-02-27 23:44:47 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:45:02 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:45:15 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 23:45:30 --> Could not find the language line "phone_settings"
+ERROR - 2026-02-27 20:48:39 --> Severity: Warning --> session_start(): Failed to read session data: user (path: ) /var/www/html/application/libraries/Session/App_Session.php 77
+ERROR - 2026-02-27 20:48:40 --> Severity: Warning --> session_start(): Failed to read session data: user (path: ) /var/www/html/application/libraries/Session/App_Session.php 77
+ERROR - 2026-02-27 20:48:41 --> Severity: Warning --> session_start(): Failed to read session data: user (path: ) /var/www/html/application/libraries/Session/App_Session.php 77
+ERROR - 2026-02-27 20:48:44 --> Severity: Warning --> session_start(): Failed to read session data: user (path: ) /var/www/html/application/libraries/Session/App_Session.php 77
+ERROR - 2026-02-27 20:48:46 --> Severity: Warning --> session_start(): Failed to read session data: user (path: ) /var/www/html/application/libraries/Session/App_Session.php 77
+ERROR - 2026-02-27 23:48:49 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at /var/www/html/system/core/Exceptions.php:271) /var/www/html/system/helpers/url_helper.php 564
+ERROR - 2026-02-27 23:48:49 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at /var/www/html/system/core/Exceptions.php:271) /var/www/html/system/helpers/url_helper.php 564
+ERROR - 2026-02-27 23:48:49 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at /var/www/html/system/core/Exceptions.php:271) /var/www/html/system/helpers/url_helper.php 564
+ERROR - 2026-02-27 23:48:53 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at /var/www/html/system/core/Exceptions.php:271) /var/www/html/system/helpers/url_helper.php 564
+ERROR - 2026-02-27 23:48:55 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at /var/www/html/system/core/Exceptions.php:271) /var/www/html/system/helpers/url_helper.php 564
+ERROR - 2026-02-27 20:49:43 --> Severity: Warning --> session_start(): Failed to read session data: user (path: ) /var/www/html/application/libraries/Session/App_Session.php 77
+ERROR - 2026-02-27 23:49:52 --> Severity: Warning --> Cannot modify header information - headers already sent by (output started at /var/www/html/system/core/Exceptions.php:271) /var/www/html/system/helpers/url_helper.php 564
