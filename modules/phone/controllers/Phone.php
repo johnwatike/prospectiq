@@ -215,7 +215,7 @@ header('Access-Control-Allow-Headers: Content-Type');
                 }
             }
         }
-        
+        $clientName = ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
         $data = array(
             'username' => $this->username,
             'phoneNumber' => $this->phoneNumber,
