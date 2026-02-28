@@ -393,12 +393,31 @@ function replace_in_file($path, $find, $replace)
 {
     $CI = & get_instance();
     $CI->load->helper('file');
-    @chmod($path, FILE_WRITE_MODE);
+    
+    // Check if file exists and is writable before attempting modification
+    if (!file_exists($path)) {
+        return false;
+    }
+    
+    // Try to make file writable, but check if it's actually writable
+    if (!is_writable($path)) {
+        @chmod($path, FILE_WRITE_MODE);
+        if (!is_writable($path)) {
+            return false;
+        }
+    }
+    
     $file = read_file($path);
+    if ($file === false) {
+        return false;
+    }
+    
     $file = trim($file);
     $file = str_replace($find, $replace, $file);
     $file = trim($file);
-    if (!$fp = fopen($path, FOPEN_WRITE_CREATE_DESTRUCTIVE)) {
+    
+    // Suppress warnings and attempt to open file
+    if (!$fp = @fopen($path, FOPEN_WRITE_CREATE_DESTRUCTIVE)) {
         return false;
     }
     flock($fp, LOCK_EX);

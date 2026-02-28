@@ -56,8 +56,25 @@ function perfex_saas_require_in_file_template($path)
  */
 function perfex_saas_file_put_contents($path, $content)
 {
-    @chmod($path, FILE_WRITE_MODE);
-    if (!$fp = fopen($path, FOPEN_WRITE_CREATE_DESTRUCTIVE)) {
+    // Check if file exists and is writable, or if directory is writable for new files
+    if (file_exists($path)) {
+        if (!is_writable($path)) {
+            // Try to make it writable, but don't fail if we can't
+            @chmod($path, FILE_WRITE_MODE);
+            if (!is_writable($path)) {
+                return false;
+            }
+        }
+    } else {
+        // For new files, check if directory is writable
+        $dir = dirname($path);
+        if (!is_writable($dir) && !@chmod($dir, 0755)) {
+            return false;
+        }
+    }
+    
+    // Suppress warnings and attempt to open file
+    if (!$fp = @fopen($path, FOPEN_WRITE_CREATE_DESTRUCTIVE)) {
         return false;
     }
     flock($fp, LOCK_EX);
@@ -126,9 +143,13 @@ function perfex_saas_unrequire_in_file($dest, $requirePath)
     if (file_exists($dest)) {
         $content = file_get_contents($dest);  // Fetch the content inside the file
         $content = preg_replace(perfex_saas_require_signature($requirePath), '', $content);
-        perfex_saas_file_put_contents($dest, $content);
+        // Only attempt to write if file is writable
+        if (is_writable($dest) || @chmod($dest, FILE_WRITE_MODE)) {
+            perfex_saas_file_put_contents($dest, $content);
+        }
         return $content;
     }
+    return '';
 }
 
 /**
@@ -154,6 +175,12 @@ function perfex_saas_db_driver_hook($forward)
     $replace = '$this->_execute(perfex_saas_db_query($sql))';
 
     try {
+        // Check if file exists and is writable before attempting modification
+        if (!file_exists($path) || (!is_writable($path) && !@chmod($path, FILE_WRITE_MODE))) {
+            // Silently skip if file is not writable
+            return;
+        }
+        
         // Perform the modification based on the `$forward` parameter
         if ($forward) {
             replace_in_file($path, $find, $replace);
@@ -161,7 +188,8 @@ function perfex_saas_db_driver_hook($forward)
             replace_in_file($path, $replace, $find);
         }
     } catch (Exception $e) {
-        throw new Exception('Error modifying DB driver method: ' . $e->getMessage());
+        // Log error but don't throw to prevent breaking uninstall process
+        log_message('error', 'Error modifying DB driver method: ' . $e->getMessage());
     }
 }
 
@@ -232,6 +260,12 @@ function perfex_saas_config_constants_hook($forward)
             $replace = $file['replace'];
 
             if (!file_exists($path)) continue;
+            
+            // Check if file is writable before attempting modification
+            if (!is_writable($path) && !@chmod($path, FILE_WRITE_MODE)) {
+                // Skip this file if we can't make it writable
+                continue;
+            }
 
             for ($i = 0; $i < count($find); $i++) {
                 if ($forward) {
@@ -261,6 +295,12 @@ function perfex_saas_config_constants_hook($forward)
 function perfex_saas_db_config_constant_hook($forward)
 {
     $path = APPPATH . 'config/app-config.php';
+
+    // Check if file exists and is writable before attempting modification
+    if (!file_exists($path) || (!is_writable($path) && !@chmod($path, FILE_WRITE_MODE))) {
+        // Silently skip if file is not writable
+        return;
+    }
 
     $constants_to_override = ['APP_BASE_URL', 'APP_DB_HOSTNAME', 'APP_DB_USERNAME', 'APP_DB_PASSWORD', 'APP_DB_NAME', 'APP_SESSION_COOKIE_SAME_SITE'];
     foreach ($constants_to_override as $key) {

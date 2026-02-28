@@ -2217,20 +2217,34 @@ public function evalmath($equation)
         $status_4 = ['name' => _l('40-60'), 'color' => '#ff6f00', 'y' => 0, 'z' => 100];
         
         foreach ($staffs as $staff) {
+            // Skip if birthday is not set or is null
+            if (empty($staff['birthday'])) {
+                continue;
+            }
 
-        $diff = date_diff(date_create(), date_create($staff['birthday']));
-        $age = $diff->format('%Y');
+            $birthday = date_create($staff['birthday']);
+            if ($birthday === false) {
+                continue;
+            }
+
+            $now = date_create('now');
+            if ($now === false) {
+                continue;
+            }
+
+            $diff = date_diff($now, $birthday);
+            $age = (int)$diff->format('%Y');
 		
-          if($age >= 18 && $age <= 24)
-          {
-            $status_1['y'] += 1;
-          }elseif ($age >= 25 && $age <= 29) {
-            $status_2['y'] += 1;
-          }elseif ($age >= 30 && $age <= 39) {
-            $status_3['y'] += 1;
-          }elseif ($age >= 40 && $age <= 60) {
-            $status_4['y'] += 1;
-          }
+            if($age >= 18 && $age <= 24)
+            {
+                $status_1['y'] += 1;
+            }elseif ($age >= 25 && $age <= 29) {
+                $status_2['y'] += 1;
+            }elseif ($age >= 30 && $age <= 39) {
+                $status_3['y'] += 1;
+            }elseif ($age >= 40 && $age <= 60) {
+                $status_4['y'] += 1;
+            }
           
         }
         if($status_1['y'] > 0){
@@ -2279,16 +2293,28 @@ public function evalmath($equation)
             $result = $this->db->query($sql)->result();
         }
         foreach ($statuses as $key => $status) {
-              $total_value+=(int)$result[$key]->total;
-          }
+            // Check if result exists for this key
+            if (isset($result[$key]) && isset($result[$key]->total)) {
+                $total_value+=(int)$result[$key]->total;
+            }
+        }
 
         foreach ($statuses as $key => $status) {
-         array_push($_data,
+            // Get the total count, default to 0 if not set
+            $count = isset($result[$key]) && isset($result[$key]->total) ? (int)$result[$key]->total : 0;
+            
+            // Calculate percentage, avoiding division by zero
+            $percentage = 0;
+            if ($total_value > 0 && $count > 0) {
+                $percentage = (number_format(($count/$total_value), 4, '.',""))*100;
+            }
+            
+            array_push($_data,
             [ 
                 'name' => $status['name_contracttype'],
-                'y'    => (int)$result[$key]->total,
-                'z'    => (number_format(((int)$result[$key]->total/$total_value), 4, '.',""))*100,
-                'color'=>$color_data[$key]
+                'y'    => $count,
+                'z'    => $percentage,
+                'color'=> isset($color_data[$key]) ? $color_data[$key] : '#777'
             ]);
         }
         return $_data;
