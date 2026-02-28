@@ -537,7 +537,7 @@ class Prchat_model extends App_Model
      *
      * @return mixed
      */
-    public function updateClientUnreadMessages($id, $to_client = null, $pusher)
+    public function updateClientUnreadMessages($id, $pusher, $to_client = null)
     {
         $contact_id = get_contact_user_id();
         $query = '';

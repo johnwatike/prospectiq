@@ -272,7 +272,7 @@ class Prchat_ClientsController extends ClientsController
         $id = $this->input->post('id');
         $client = $this->input->post('client');
         $pusher = $this->pusher;
-        echo json_encode($this->chat_model->updateClientUnreadMessages($id, ($client) ? $client : null, $pusher));
+        echo json_encode($this->chat_model->updateClientUnreadMessages($id, $pusher, ($client) ? $client : null));
     }
 
 
