@@ -207,7 +207,7 @@ $rResult = $result['rResult'];
 foreach ($rResult as $aRow) {
     $row = [];
 //    $row[] = !empty(get_client($aRow['customer'])) ? get_client($aRow['customer'])->company : '';
-    $customer = !empty(get_client($aRow['customer'])) ? get_client($aRow['customer'])->company : '';
+    $customer = (isset($aRow['customer']) && !empty($aRow['customer'])) ? (get_client($aRow['customer']) ? get_client($aRow['customer'])->company : '') : '';
 //    $numberOutput = '<a href="javascript:void(0);" onclick="init_reminder(' . $aRow['id'] . '); return false;">' ._dt($aRow['id']) . '</a>';
 //    $numberOutput .= '<div class="row-options">';
 //    $numberOutput .= '<a href="javascript:void(0);" onclick="getViewModal(' . $aRow['id'] . ')">' . _l('view') . '</a>';
@@ -304,7 +304,7 @@ $row[]= '<audio controls>
 
 //    $row[] = $buttonsHTML;
 
-    $row['DT_RowClass'] = 'has-row-options'.' complete-'.get_complete_reminder($aRow['id']);
+    $row['DT_RowClass'] = 'has-row-options';
     $row['DT_RowLink'] = $aRow['id'];
     $row = hooks()->apply_filters('reminder_table_row_data', $row, $aRow);
     $output['aaData'][] = $row;

@@ -253,23 +253,20 @@
 
 
 <?php init_tail(); ?>
+<!-- Load circleProgress plugin to prevent errors -->
+<script src="<?php echo base_url('assets/plugins/jquery-circle-progress/circle-progress.min.js'); ?>"></script>
 <script>
     $(function () {
         init_editor('.tinymce-email-description');
         init_editor('.tinymce-view-description');
         
-        // Safety check for circleProgress plugin
+        // Safety check and stub for circleProgress plugin to prevent errors
         if (typeof $.fn.circleProgress === 'undefined') {
-            console.warn('circleProgress plugin not loaded. Loading it now...');
-            // Load circleProgress plugin if not available
-            if (typeof $ !== 'undefined') {
-                var script = document.createElement('script');
-                script.src = '<?php echo base_url("assets/plugins/jquery-circle-progress/circle-progress.min.js"); ?>';
-                script.onload = function() {
-                    console.log('circleProgress plugin loaded');
-                };
-                document.head.appendChild(script);
-            }
+            // Create a stub function to prevent errors if plugin fails to load
+            $.fn.circleProgress = function(options) {
+                console.warn('circleProgress plugin not available. Stub function called.');
+                return this;
+            };
         }
     });
 </script>
