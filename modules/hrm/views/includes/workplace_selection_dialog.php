@@ -1,6 +1,9 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); 
 $CI = &get_instance();
-$CI->load->model('hrm_model');
+// Model should already be loaded by the hook function, but ensure it's loaded
+if (!isset($CI->hrm_model)) {
+	$CI->load->model('hrm_model');
+}
 $workplaces = $CI->hrm_model->get_workplace();
 ?>
 <div class="modal fade" id="workplace_selection_modal" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false">

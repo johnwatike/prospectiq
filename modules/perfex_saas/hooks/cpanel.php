@@ -5,7 +5,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 /** GATE KEEPERS ***/
 if (perfex_saas_is_tenant()) return;
 
-$is_running_on_cpanel = is_dir('/usr/local/cpanel');
+// Check if cPanel is available, handling open_basedir restrictions gracefully
+$is_running_on_cpanel = false;
+if (function_exists('is_dir')) {
+    // Suppress warnings for open_basedir restrictions
+    $is_running_on_cpanel = @is_dir('/usr/local/cpanel');
+}
 if (get_option('perfex_saas_cpanel_enabled') != '1' || !$is_running_on_cpanel) return;
 
 

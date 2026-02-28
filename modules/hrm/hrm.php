@@ -233,6 +233,9 @@ function hrm_add_footer_components(){
 function hrm_include_workplace_dialog() {
 	$CI = &get_instance();
 	if (is_staff_logged_in()) {
+		// Load the model before loading the view
+		$CI->load->model('hrm_model');
+		
 		// Get workplace_id from session
 		$workplace_id = $CI->session->userdata('staff_workplace_id');
 		
