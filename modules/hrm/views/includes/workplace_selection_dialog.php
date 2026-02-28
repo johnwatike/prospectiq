@@ -2,7 +2,7 @@
 $CI = &get_instance();
 // Model should already be loaded by the hook function, but ensure it's loaded
 if (!isset($CI->hrm_model)) {
-	$CI->load->model('hrm_model');
+	$CI->load->model('hrm/hrm_model');
 }
 $workplaces = $CI->hrm_model->get_workplace();
 ?>
