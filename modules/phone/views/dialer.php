@@ -151,13 +151,24 @@
         cursor: pointer;
     }
 
-    /* Fix dimmer blocking clicks when not active */
+    /* Ensure dimmer doesn't block clicks when not active */
     #loader.ui.dimmer:not(.active) {
         display: none !important;
         pointer-events: none !important;
     }
+
+    /* Ensure dimmer is scoped to its container, not the entire page */
+    #loader.ui.dimmer {
+        position: relative;
+    }
+
+    /* Make sure the dialer container allows clicks through when dimmer is hidden */
+    .dialer-container {
+        position: relative;
+    }
 </style>
 
+<div class="dialer-container">
 <div id='loader' class="ui dimmer">
     <div class="ui loader"></div>
 </div>
@@ -250,8 +261,9 @@
             </div>
         </div>
     </div>
-
 </div>
+</div>
+<!-- End dialer-container -->
 
 <!-- partial -->
 <script src="https://unpkg.com/africastalking-client@1.0.2/build/africastalking.js"></script>
@@ -259,23 +271,20 @@
 
 
 <?php init_tail(); ?>
+<!-- Load circleProgress plugin to prevent errors -->
+<script src="<?php echo base_url('assets/plugins/jquery-circle-progress/circle-progress.min.js'); ?>"></script>
 <script>
     $(function () {
         init_editor('.tinymce-email-description');
         init_editor('.tinymce-view-description');
         
-        // Safety check for circleProgress plugin
+        // Safety check and stub for circleProgress plugin to prevent errors
         if (typeof $.fn.circleProgress === 'undefined') {
-            console.warn('circleProgress plugin not loaded. Loading it now...');
-            // Load circleProgress plugin if not available
-            if (typeof $ !== 'undefined') {
-                var script = document.createElement('script');
-                script.src = '<?php echo base_url("assets/plugins/jquery-circle-progress/circle-progress.min.js"); ?>';
-                script.onload = function() {
-                    console.log('circleProgress plugin loaded');
-                };
-                document.head.appendChild(script);
-            }
+            // Create a stub function to prevent errors if plugin fails to load
+            $.fn.circleProgress = function(options) {
+                console.warn('circleProgress plugin not available. Stub function called.');
+                return this;
+            };
         }
     });
 </script>
@@ -297,6 +306,7 @@
         const clientName = document.getElementById('client-name');
         if (!(clientName.value.length === 0)) {
             loader.classList = "ui active dimmer";
+            loader.style.display = '';
 
             fetch('/admin/phone/capability_token?clientName='+clientName.value.replace(/\s/g, "_"), {
                 headers: { "Content-Type": "application/json; charset=utf-8"},
@@ -371,6 +381,7 @@
                         outputColor.classList = 'ui tiny green circular label';
                         outputLabel.textContent = 'Ready to make calls';
                         loader.classList.remove('active');
+                        loader.style.display = 'none';
                     }, false);
 
 
@@ -431,22 +442,26 @@
                         outputLabel.textContent = 'Token expired, refresh page';
                         outputColor.classList = 'ui tiny red circular label';
                         loader.classList.remove('active');
+                        loader.style.display = 'none';
                     }, false);
 
                     client.on('missedcall', function () {
                         outputLabel.textContent = 'Missed call from ' + client.getCounterpartNum().replace(`${username}.`, "");
                         outputColor.classList = 'ui tiny red circular label';
                         loader.classList.remove('active');
+                        loader.style.display = 'none';
                     }, false);
 
                     client.on('closed', function () {
                         outputLabel.textContent = 'connection closed, refresh page';
                         outputColor.classList = 'ui tiny red circular label';
                         loader.classList.remove('active');
+                        loader.style.display = 'none';
                     }, false);
                 })
                 .catch(error => {
                     loader.classList.remove('active');
+                    loader.style.display = 'none';
                     console.error('Africastalking error:', error);
                     if (error && typeof error === 'object' && error.message) {
                         outputLabel.textContent = 'Error: ' + error.message;
@@ -480,7 +495,17 @@
         ATlogin();
         // alert("Page loaded successfully"   );
     }
-    window.onload = ATlogin;
+    // Initialize loader as hidden on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        const loader = document.getElementById('loader');
+        if (loader) {
+            loader.classList.remove('active');
+            loader.style.display = 'none';
+        }
+    });
+
+    // Only auto-login if explicitly needed, otherwise let user click
+    // window.onload = ATlogin; // Commented out to prevent auto-blocking
 
 
 

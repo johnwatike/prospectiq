@@ -207,7 +207,7 @@ $rResult = $result['rResult'];
 foreach ($rResult as $aRow) {
     $row = [];
 //    $row[] = !empty(get_client($aRow['customer'])) ? get_client($aRow['customer'])->company : '';
-    $customer = !empty(get_client($aRow['customer'])) ? get_client($aRow['customer'])->company : '';
+    $customer = (isset($aRow['customer']) && !empty($aRow['customer'])) ? (get_client($aRow['customer']) ? get_client($aRow['customer'])->company : '') : '';
 //    $numberOutput = '<a href="javascript:void(0);" onclick="init_reminder(' . $aRow['id'] . '); return false;">' ._dt($aRow['id']) . '</a>';
 //    $numberOutput .= '<div class="row-options">';
 //    $numberOutput .= '<a href="javascript:void(0);" onclick="getViewModal(' . $aRow['id'] . ')">' . _l('view') . '</a>';
@@ -270,6 +270,8 @@ if($aRow['call_direction'] == "Outgoing" || $aRow['call_direction'] == "outgoing
    
     $row[]=$aRow['callerNumber']; 
 }
+// Call_Type column (column 8) - using status if available, otherwise empty
+$row[] = isset($aRow['status']) && !empty($aRow['status']) ? $aRow['status'] : '';
 $row[]= '<audio controls>
   <source src="'.'https://phone.petanns.co.ke/'.$aRow['recordingUrl'].'" type="audio/mpeg">
   Your browser does not support the audio element.
@@ -304,7 +306,7 @@ $row[]= '<audio controls>
 
 //    $row[] = $buttonsHTML;
 
-    $row['DT_RowClass'] = 'has-row-options'.' complete-'.get_complete_reminder($aRow['id']);
+    $row['DT_RowClass'] = 'has-row-options';
     $row['DT_RowLink'] = $aRow['id'];
     $row = hooks()->apply_filters('reminder_table_row_data', $row, $aRow);
     $output['aaData'][] = $row;

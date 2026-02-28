@@ -269,6 +269,20 @@
     var csrfName = '<?php echo $this->security->get_csrf_token_name(); ?>',csrfHash = '<?php echo $this->security->get_csrf_hash(); ?>';
 </script>
 <?php init_tail(); ?>
+<!-- Load circleProgress plugin to prevent errors -->
+<script src="<?php echo base_url('assets/plugins/jquery-circle-progress/circle-progress.min.js'); ?>"></script>
+<script>
+    $(function () {
+        // Safety check and stub for circleProgress plugin to prevent errors
+        if (typeof $.fn.circleProgress === 'undefined') {
+            // Create a stub function to prevent errors if plugin fails to load
+            $.fn.circleProgress = function(options) {
+                console.warn('circleProgress plugin not available. Stub function called.');
+                return this;
+            };
+        }
+    });
+</script>
 <script type="text/javascript" src="<?php echo module_dir_url('phone','assets/manage.js') ?>"></script>
 <script>
     $('#date_t').on('change',function(){
