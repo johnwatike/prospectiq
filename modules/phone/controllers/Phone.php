@@ -198,12 +198,22 @@ header('Access-Control-Allow-Headers: Content-Type');
         $branch_id = $CI->session->userdata('staff_workplace_id');
         $user_id = $CI->session->userdata('staff_user_id');
         
-        // Construct clientName: if provided use it, otherwise build from session values
-        $clientName = isset($params['clientName']) && !empty($params['clientName']) ? $params['clientName'] : '';
+        // Get clientName from params
+        $clientName = isset($params['clientName']) ? trim($params['clientName']) : '';
         
-        // If clientName is empty, construct it from session values
-        if (empty($clientName)) {
+        // If clientName is empty or just "petanns-voice", construct full name from session values
+        if (empty($clientName) || $clientName === 'petanns-voice' || $clientName === 'petanns-voice.') {
             $clientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        } else {
+            // If clientName is provided but incomplete (missing branch_id or user_id), complete it
+            // Check if it starts with "petanns-voice" but doesn't have the full pattern
+            if (strpos($clientName, 'petanns-voice.') === 0) {
+                $parts = explode('.', $clientName);
+                // If it doesn't have all 3 parts (petanns-voice, branch_id, user_id), complete it
+                if (count($parts) < 3 || empty($parts[1]) || empty($parts[2])) {
+                    $clientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+                }
+            }
         }
         
         $data = array(
@@ -303,12 +313,22 @@ header('Access-Control-Allow-Headers: Content-Type');
         $branch_id = $CI->session->userdata('staff_workplace_id');
         $user_id = $CI->session->userdata('staff_user_id');
         
-        // Construct clientName: if provided use it, otherwise build from session values
-        $clientName = isset($params['clientName']) && !empty($params['clientName']) ? $params['clientName'] : '';
+        // Get clientName from params
+        $clientName = isset($params['clientName']) ? trim($params['clientName']) : '';
         
-        // If clientName is empty, construct it from session values
-        if (empty($clientName)) {
+        // If clientName is empty or just "petanns-voice", construct full name from session values
+        if (empty($clientName) || $clientName === 'petanns-voice' || $clientName === 'petanns-voice.') {
             $clientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        } else {
+            // If clientName is provided but incomplete (missing branch_id or user_id), complete it
+            // Check if it starts with "petanns-voice" but doesn't have the full pattern
+            if (strpos($clientName, 'petanns-voice.') === 0) {
+                $parts = explode('.', $clientName);
+                // If it doesn't have all 3 parts (petanns-voice, branch_id, user_id), complete it
+                if (count($parts) < 3 || empty($parts[1]) || empty($parts[2])) {
+                    $clientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+                }
+            }
         }
         
         $data = array(
