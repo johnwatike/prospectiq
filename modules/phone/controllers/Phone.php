@@ -31,12 +31,12 @@ class Phone extends AdminController{
         
         $data['title'] = _l('phone');
         $CI =& get_instance();
-        $branch_id =  $CI->session->userdata('branch_id');//isset($_GET['name']) ? $_GET['name'] : '';
+        $branch_id = $CI->session->userdata('staff_workplace_id'); // Use staff_workplace_id as branch_id
         $user_id = $CI->session->userdata('staff_user_id');
 
 // Use the $user_id as needed
 // echo "User ID: " . $user_id;
-        $data['name'] = 'petanns-voice.' . $branch_id . '.' . $user_id;
+        $data['name'] = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
 // $this->app_scripts->add('surveys-js', module_dir_url('phone', 'assets/js/index.js'), 'admin', ['app-js']);
 // $this->app_css->add('surveys-css', module_dir_url('phone', 'assets/css/surveys.css'), 'admin', ['app-css']);
 
@@ -64,10 +64,10 @@ class Phone extends AdminController{
     }
     public function dialer() {
         $CI =& get_instance();
-        $branch_id = $CI->session->userdata('branch_id');
+        $branch_id = $CI->session->userdata('staff_workplace_id'); // Use staff_workplace_id as branch_id
         $user_id = $CI->session->userdata('staff_user_id');
         $data['title'] = _l('phone');
-        $name = 'petanns-voice.' . $branch_id . '.' . $user_id;
+        $name = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
         $phonenumber = isset($_GET['phonenumber']) ? $_GET['phonenumber'] : '';
         $call_log_id = isset($_GET['call_log_id']) ? $_GET['call_log_id'] : '';
         $data['name'] = $name;
@@ -95,13 +95,13 @@ public function table()
         // ?name=john&phonenumber=0726339982&call_log_id=1234&branch_id=1
         $data['title'] = _l('phone');
         
-        $branch_id =  $CI->session->userdata('branch_id');//isset($_GET['name']) ? $_GET['name'] : '';
+        $branch_id = $CI->session->userdata('staff_workplace_id'); // Use staff_workplace_id as branch_id
         $user_id = $CI->session->userdata('staff_user_id');
 
 // Use the $user_id as needed
 // echo "User ID: " . $user_id;
-        $data['name'] = 'petanns-voice.' . $branch_id . '.' . $user_id;
-        $name = 'petanns-voice.' . $branch_id . '.' . $user_id;// $CI->session->userdata('branch_id');//isset($_GET['name']) ? $_GET['name'] : '';
+        $data['name'] = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        $name = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');// $CI->session->userdata('branch_id');//isset($_GET['name']) ? $_GET['name'] : '';
         $phonenumber = isset($_GET['phonenumber']) ? $_GET['phonenumber'] : '';
         $call_log_id = isset($_GET['call_log_id']) ? $_GET['call_log_id'] : '';
         // $branch_id = isset($_GET['branch_id']) ? $_GET['branch_id'] : '';
@@ -129,7 +129,7 @@ public function table()
             $this->db->insert('customer_phone_branch', $datax);
         }
 
-        $data['name'] = 'petanns-voice.' . $branch_id . '.' . $user_id;
+        $data['name'] = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
         $data['phonenumber'] = $phonenumber;
         $data['call_log_id'] = $call_log_id;
         $this->load->view('phone/micro_dialer_phone', $data);
@@ -193,18 +193,23 @@ header('Access-Control-Allow-Headers: Content-Type');
         $token = null;
         $url = 'https://webrtc.africastalking.com/capability-token/request';
         
-        // Get branch_id (staff_workplace_id) and user_id from session for fallback
+        // Get branch_id (staff_workplace_id) and user_id from session
         $CI =& get_instance();
         $branch_id = $CI->session->userdata('staff_workplace_id');
         $user_id = $CI->session->userdata('staff_user_id');
         
-        // Default fallback pattern: petanns-voice.[branch_id].[user_id]
-        $defaultClientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        // Construct clientName: if provided use it, otherwise build from session values
+        $clientName = isset($params['clientName']) && !empty($params['clientName']) ? $params['clientName'] : '';
+        
+        // If clientName is empty, construct it from session values
+        if (empty($clientName)) {
+            $clientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        }
         
         $data = array(
             'username' => $this->username,
             'phoneNumber' => $this->phoneNumber,
-            'clientName' => isset($params['clientName']) ? $params['clientName'] : $defaultClientName,
+            'clientName' => $clientName,
             'incoming' => 'true',
             'outgoing' => 'true',
             'expire' => '7200s'
@@ -293,18 +298,23 @@ header('Access-Control-Allow-Headers: Content-Type');
         $token = null;
         $url = 'https://webrtc.africastalking.com/capability-token/request';
         
-        // Get branch_id (staff_workplace_id) and user_id from session for fallback
+        // Get branch_id (staff_workplace_id) and user_id from session
         $CI =& get_instance();
         $branch_id = $CI->session->userdata('staff_workplace_id');
         $user_id = $CI->session->userdata('staff_user_id');
         
-        // Default fallback pattern: petanns-voice.[branch_id].[user_id]
-        $defaultClientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        // Construct clientName: if provided use it, otherwise build from session values
+        $clientName = isset($params['clientName']) && !empty($params['clientName']) ? $params['clientName'] : '';
+        
+        // If clientName is empty, construct it from session values
+        if (empty($clientName)) {
+            $clientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        }
         
         $data = array(
             'username' => $this->username,
             'phoneNumber' => $this->phoneNumber,
-            'clientName' => isset($params['clientName']) ? $params['clientName'] : $defaultClientName,
+            'clientName' => $clientName,
             'incoming' => 'true',
             'outgoing' => 'true',
             'expire' => '7200s'
