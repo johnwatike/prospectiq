@@ -36,7 +36,7 @@ class Phone extends AdminController{
 
 // Use the $user_id as needed
 // echo "User ID: " . $user_id;
-        $data['name'] = $branch_id.".".$user_id;
+        $data['name'] = 'petanns-voice.' . $branch_id . '.' . $user_id;
 // $this->app_scripts->add('surveys-js', module_dir_url('phone', 'assets/js/index.js'), 'admin', ['app-js']);
 // $this->app_css->add('surveys-css', module_dir_url('phone', 'assets/css/surveys.css'), 'admin', ['app-css']);
 
@@ -64,9 +64,10 @@ class Phone extends AdminController{
     }
     public function dialer() {
         $CI =& get_instance();
-        $CI->session->userdata('branch_id');
+        $branch_id = $CI->session->userdata('branch_id');
+        $user_id = $CI->session->userdata('staff_user_id');
         $data['title'] = _l('phone');
-        $name =  $CI->session->userdata('branch_id');//isset($_GET['name']) ? $_GET['name'] : '';
+        $name = 'petanns-voice.' . $branch_id . '.' . $user_id;
         $phonenumber = isset($_GET['phonenumber']) ? $_GET['phonenumber'] : '';
         $call_log_id = isset($_GET['call_log_id']) ? $_GET['call_log_id'] : '';
         $data['name'] = $name;
@@ -99,8 +100,8 @@ public function table()
 
 // Use the $user_id as needed
 // echo "User ID: " . $user_id;
-        $data['name'] = $branch_id.".".$user_id;
-        $name = $branch_id.".".$user_id;// $CI->session->userdata('branch_id');//isset($_GET['name']) ? $_GET['name'] : '';
+        $data['name'] = 'petanns-voice.' . $branch_id . '.' . $user_id;
+        $name = 'petanns-voice.' . $branch_id . '.' . $user_id;// $CI->session->userdata('branch_id');//isset($_GET['name']) ? $_GET['name'] : '';
         $phonenumber = isset($_GET['phonenumber']) ? $_GET['phonenumber'] : '';
         $call_log_id = isset($_GET['call_log_id']) ? $_GET['call_log_id'] : '';
         // $branch_id = isset($_GET['branch_id']) ? $_GET['branch_id'] : '';
@@ -128,7 +129,7 @@ public function table()
             $this->db->insert('customer_phone_branch', $datax);
         }
 
-        $data['name'] = $branch_id.".".$user_id;
+        $data['name'] = 'petanns-voice.' . $branch_id . '.' . $user_id;
         $data['phonenumber'] = $phonenumber;
         $data['call_log_id'] = $call_log_id;
         $this->load->view('phone/micro_dialer_phone', $data);
@@ -191,10 +192,19 @@ header('Access-Control-Allow-Headers: Content-Type');
     private function capabilityToken_($params) {
         $token = null;
         $url = 'https://webrtc.africastalking.com/capability-token/request';
+        
+        // Get branch_id (staff_workplace_id) and user_id from session for fallback
+        $CI =& get_instance();
+        $branch_id = $CI->session->userdata('staff_workplace_id');
+        $user_id = $CI->session->userdata('staff_user_id');
+        
+        // Default fallback pattern: petanns-voice.[branch_id].[user_id]
+        $defaultClientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        
         $data = array(
             'username' => $this->username,
             'phoneNumber' => $this->phoneNumber,
-            'clientName' => isset($params['clientName']) ? $params['clientName'] : 'browser1',
+            'clientName' => isset($params['clientName']) ? $params['clientName'] : $defaultClientName,
             'incoming' => 'true',
             'outgoing' => 'true',
             'expire' => '7200s'
@@ -282,10 +292,19 @@ header('Access-Control-Allow-Headers: Content-Type');
     private function capabilityToken($params) {
         $token = null;
         $url = 'https://webrtc.africastalking.com/capability-token/request';
+        
+        // Get branch_id (staff_workplace_id) and user_id from session for fallback
+        $CI =& get_instance();
+        $branch_id = $CI->session->userdata('staff_workplace_id');
+        $user_id = $CI->session->userdata('staff_user_id');
+        
+        // Default fallback pattern: petanns-voice.[branch_id].[user_id]
+        $defaultClientName = 'petanns-voice.' . ($branch_id ? $branch_id : '1') . '.' . ($user_id ? $user_id : '1');
+        
         $data = array(
             'username' => $this->username,
             'phoneNumber' => $this->phoneNumber,
-            'clientName' => isset($params['clientName']) ? $params['clientName'] : 'browser1',
+            'clientName' => isset($params['clientName']) ? $params['clientName'] : $defaultClientName,
             'incoming' => 'true',
             'outgoing' => 'true',
             'expire' => '7200s'
