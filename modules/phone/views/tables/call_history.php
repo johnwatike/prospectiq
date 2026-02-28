@@ -270,6 +270,8 @@ if($aRow['call_direction'] == "Outgoing" || $aRow['call_direction'] == "outgoing
    
     $row[]=$aRow['callerNumber']; 
 }
+// Call_Type column (column 8) - using status if available, otherwise empty
+$row[] = isset($aRow['status']) && !empty($aRow['status']) ? $aRow['status'] : '';
 $row[]= '<audio controls>
   <source src="'.'https://phone.petanns.co.ke/'.$aRow['recordingUrl'].'" type="audio/mpeg">
   Your browser does not support the audio element.
