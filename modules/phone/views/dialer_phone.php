@@ -150,6 +150,12 @@
     #dialer_table .dialer_del_td img {
         cursor: pointer;
     }
+
+    /* Fix dimmer blocking clicks when not active */
+    #loader.ui.dimmer:not(.active) {
+        display: none !important;
+        pointer-events: none !important;
+    }
 </style>
 
 <div id='loader' class="ui dimmer">
@@ -351,7 +357,7 @@
                         callto.focus();
                         outputColor.classList = 'ui tiny green circular label';
                         outputLabel.textContent = 'Ready to make calls';
-                        loader.classList = "ui dimmer";
+                        loader.classList.remove('active');
                     }, false);
 
 
@@ -411,23 +417,23 @@
                     client.on('offline', function () {
                         outputLabel.textContent = 'Token expired, refresh page';
                         outputColor.classList = 'ui tiny red circular label';
-                        loader.classList = "ui dimmer";
+                        loader.classList.remove('active');
                     }, false);
 
                     client.on('missedcall', function () {
                         outputLabel.textContent = 'Missed call from ' + client.getCounterpartNum().replace(`${username}.`, "");
                         outputColor.classList = 'ui tiny red circular label';
-                        loader.classList = "ui dimmer";
+                        loader.classList.remove('active');
                     }, false);
 
                     client.on('closed', function () {
                         outputLabel.textContent = 'connection closed, refresh page';
                         outputColor.classList = 'ui tiny red circular label';
-                        loader.classList = "ui dimmer";
+                        loader.classList.remove('active');
                     }, false);
                 })
                 .catch(error => {
-                    loader.classList = "ui dimmer";
+                    loader.classList.remove('active');
                     console.error('Africastalking error:', error);
                     if (error && typeof error === 'object' && error.message) {
                         outputLabel.textContent = 'Error: ' + error.message;
