@@ -467,7 +467,45 @@
         ATlogin();
         // alert("Page loaded successfully"   );
     }
-    window.onload = ATlogin;
+    
+    // Auto-initialize dialer on page load with dimmer
+    window.addEventListener('DOMContentLoaded', function() {
+        const loader = document.getElementById('loader');
+        const clientName = document.getElementById('client-name');
+        const outputLabel = document.getElementById('output-lbl');
+        const outputColor = document.getElementById('output-color');
+        
+        // Show dimmer and update status during initialization
+        if (loader) {
+            loader.classList.add('active');
+            loader.style.display = '';
+        }
+        
+        // Update status to show loading
+        if (outputLabel) {
+            outputLabel.textContent = 'Initializing...';
+        }
+        if (outputColor) {
+            outputColor.classList = 'ui tiny orange circular label';
+        }
+        
+        // Auto-initialize if client name is available
+        if (clientName && clientName.value && clientName.value.length > 0) {
+            // Small delay to ensure page is fully loaded
+            setTimeout(function() {
+                ATlogin();
+            }, 100);
+        } else {
+            // Hide dimmer if no client name
+            if (loader) {
+                loader.classList.remove('active');
+                loader.style.display = 'none';
+            }
+            if (outputLabel) {
+                outputLabel.textContent = 'Client name required';
+            }
+        }
+    });
 
 
 
